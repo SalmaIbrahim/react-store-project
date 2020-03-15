@@ -145,7 +145,19 @@ class ProductProvider extends Component {
             cart: [...tempCart]
           };
         },
-        () => {
+        async () => {
+          const dbRes = await axios.get(
+            `https://store-react-project.firebaseio.com/cart.json`
+          );
+          const dbCart = dbRes.data;
+          for (const key in dbCart) {
+            if (dbCart[key].id === id) {
+              await axios.patch(
+                `https://store-react-project.firebaseio.com/cart/${key}.json`,
+                { count: product.count }
+              );
+            }
+          }
           this.addTotals();
         }
       );
